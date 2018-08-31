@@ -1,0 +1,6 @@
+[logger]
+transactional = d:\\var\\log\\monitoring.log 
+error = d:\\var\\log\\monitoring.err.log
+maxSize = 100
+MaxAge = 7
+MaxBackups = 10

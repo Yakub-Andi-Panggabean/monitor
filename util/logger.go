@@ -1,8 +1,6 @@
 package util
 
 import (
-	"time"
-
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -17,17 +15,17 @@ var errorLog = logrus.New()
 func init() {
 
 	transactionalLogger := lumberjack.Logger{
-		Filename:   "d:\\var\\log\\monitoring." + time.Now().Local().Format("2006-01-02") + ".log",
-		MaxSize:    100,
-		MaxAge:     30,
-		MaxBackups: 7,
+		Filename:   GetConfig("logger.transactional").(string),
+		MaxSize:    int(GetConfig("logger.maxSize").(int64)),
+		MaxAge:     int(GetConfig("logger.MaxAge").(int64)),
+		MaxBackups: int(GetConfig("logger.MaxBackups").(int64)),
 	}
 
 	errorLogger := lumberjack.Logger{
-		Filename:   "d:\\var\\log\\monitoring.err." + time.Now().Local().Format("2006-01-02") + ".log",
-		MaxSize:    100,
-		MaxAge:     30,
-		MaxBackups: 7,
+		Filename:   GetConfig("logger.error").(string),
+		MaxSize:    int(GetConfig("logger.maxSize").(int64)),
+		MaxAge:     int(GetConfig("logger.MaxAge").(int64)),
+		MaxBackups: int(GetConfig("logger.MaxBackups").(int64)),
 	}
 
 	transactionLog.SetOutput(&transactionalLogger)

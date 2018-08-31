@@ -5,5 +5,5 @@ import (
 )
 
 type CdrRepsitory interface {
-	FetchCDR(limit int) entity.CDR
+	FetchLatestUpdatedCDR() entity.CDR
 }

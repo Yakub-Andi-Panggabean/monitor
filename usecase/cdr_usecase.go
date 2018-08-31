@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"firstwap.com/sms-monitoring-api/entity"
 	"firstwap.com/sms-monitoring-api/repository"
 	"firstwap.com/sms-monitoring-api/util"
 	log "github.com/sirupsen/logrus"
@@ -20,9 +19,10 @@ func NewCDRUsecase(r repository.CdrRepsitory) *cdrUsecase {
 
 }
 
-func (r *cdrUsecase) calculateDeliveryInterval(cdr entity.CDR) (float64, error) {
+func (r *cdrUsecase) calculateDeliveryInterval(cdrCount int) (float64, error) {
 
-	messageIDDateTime := util.ParseQueueMessageID(cdr.QueueMessageID)
+	cdr := r.cdrRepo.FetchLatestUpdatedCDR()
+	messageIDDateTime, _ := util.ParseQueueMessageID(cdr.QueueMessageID)
 	time, err := util.ConvertDateStringToTime(messageIDDateTime)
 
 	log.Info(cdr)
