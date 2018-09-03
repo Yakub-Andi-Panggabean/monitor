@@ -4,3 +4,11 @@ error = "d:\\var\\log\\monitoring.err.log"
 maxSize = 100
 MaxAge = 7
 MaxBackups = 10
+
+[server]
+port = 8080
+
+[database.indosat]
+name = "CDR_ISAT"
+address = "10.32.6.71"
+port = "3306"

@@ -43,7 +43,7 @@ func NewFirstLogger(f string) *firstLogger {
 }
 
 //Debug logging with debug level
-func (f *firstLogger) Debug(message interface{}) {
+func (f *firstLogger) Debug(message ...interface{}) {
 	transactionLog.WithFields(logrus.Fields{
 		"file": f.Filename,
 	}).Debug(message)
@@ -51,21 +51,21 @@ func (f *firstLogger) Debug(message interface{}) {
 }
 
 //Info logging with Info level
-func (f *firstLogger) Info(message interface{}) {
+func (f *firstLogger) Info(message ...interface{}) {
 	transactionLog.WithFields(logrus.Fields{
 		"file": f.Filename,
 	}).Info(message)
 }
 
 //Warn logging with Warn level
-func (f *firstLogger) Warn(message interface{}) {
+func (f *firstLogger) Warn(message ...interface{}) {
 	transactionLog.WithFields(logrus.Fields{
 		"file": f.Filename,
 	}).Warn(message)
 }
 
 //Error logging with Error level
-func (f *firstLogger) Error(message interface{}) {
+func (f *firstLogger) Error(message ...interface{}) {
 
 	transactionLog.WithFields(logrus.Fields{
 		"file": f.Filename,
