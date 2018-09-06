@@ -31,3 +31,18 @@ func ConvertDateStringToTime(messageIDTime string) (time.Time, error) {
 
 	return time.Parse(DateLayout, messageIDTime)
 }
+
+
+func Contains(arr []string,val string) bool{
+
+	for _,existingValue:=range arr{
+
+		if(val==existingValue){
+			return true
+		}
+
+	}
+
+	return false
+
+}

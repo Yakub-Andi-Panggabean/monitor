@@ -6,5 +6,5 @@ import (
 
 //CDRUsecase represent usecase of cdr
 type CDRUsecase interface {
-	FindDeliveryMetric() (*entity.CDR, error)
+	FindDeliveryMetric() ([]*entity.CDR, error)
 }

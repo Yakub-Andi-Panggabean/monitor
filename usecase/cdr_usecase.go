@@ -9,11 +9,11 @@ import (
 var log = util.NewFirstLogger("cdr_usecase")
 
 type cdrUsecase struct {
-	cdrRepo repository.CdrRepsitory
+	cdrRepo repository.CdrRepository
 }
 
 //NewCDRUsecase create cdr usecase instance
-func NewCDRUsecase(r repository.CdrRepsitory) CDRUsecase {
+func NewCDRUsecase(r repository.CdrRepository) CDRUsecase {
 
 	return &cdrUsecase{
 		cdrRepo: r,
@@ -21,23 +21,25 @@ func NewCDRUsecase(r repository.CdrRepsitory) CDRUsecase {
 
 }
 
-func (r *cdrUsecase) FindDeliveryMetric() (*entity.CDR, error) {
+func (r *cdrUsecase) FindDeliveryMetric() ([]*entity.CDR, error) {
 
-	cdr := r.cdrRepo.FetchLatestUpdatedCDR()
-	messageIDDateTime, _ := util.ParseQueueMessageID(cdr.QueueMessageID)
-	time, err := util.ConvertDateStringToTime(messageIDDateTime)
+	result := make([]*entity.CDR, 0)
+	cdrs := r.cdrRepo.FetchLatestUpdatedCDR()
 
-	log.Info(cdr)
+	for _, cdr := range cdrs {
 
-	if err != nil {
-		return nil, err
+		messageIDDateTime, _ := util.ParseQueueMessageID(cdr.QueueMessageID)
+		time, err := util.ConvertDateStringToTime(messageIDDateTime)
+
+		if err != nil {
+			return nil, err
+		}
+
+		cdr.Interval = int64(time.Sub(cdr.DateTime).Seconds())
+		result = append(result, cdr)
+
 	}
 
-	return &entity.CDR{
-		DateTime:          cdr.DateTime,
-		QueueMessageID:    cdr.QueueMessageID,
-		SubmmitedDateTime: cdr.SubmmitedDateTime,
-		Interval:          int64(time.Sub(cdr.DateTime).Seconds()),
-	}, nil
+	return result, nil
 
 }

@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -11,19 +12,26 @@ import (
 func init() {
 
 	viper.SetConfigType("toml")
+
 	if os.Getenv("ENVIRONMENT") == "dev" {
+
 		viper.SetConfigName("config.dev")
+
 	} else {
+
 		viper.SetConfigName("config")
+
 	}
 
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("..")
 	viper.AddConfigPath("$HOME/")
 	err := viper.ReadInConfig()
+
 	if err != nil {
 		panic(fmt.Errorf("Fatal error when reading config %s ", err))
 	}
+
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
 
@@ -37,5 +45,29 @@ func init() {
 func GetConfig(key string) interface{} {
 
 	return viper.Get(key)
+
+}
+
+func GetAllDataSources() []string {
+
+	dbSlice := make([]string, 0)
+
+	for _, ds := range viper.AllKeys() {
+
+		if strings.HasPrefix(ds, "database") {
+
+			databases := strings.Split(ds, ".")[0] + "." + strings.Split(ds, ".")[1]
+
+			if !Contains(dbSlice, databases) && !strings.Contains(databases, "connection") {
+				dbSlice = append(dbSlice, databases)
+			}
+
+		}
+
+	}
+
+	fmt.Println(dbSlice)
+
+	return dbSlice
 
 }

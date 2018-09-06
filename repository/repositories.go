@@ -4,6 +4,6 @@ import (
 	"firstwap.com/sms-monitoring-api/entity"
 )
 
-type CdrRepsitory interface {
-	FetchLatestUpdatedCDR() entity.CDR
+type CdrRepository interface {
+	FetchLatestUpdatedCDR() []*entity.CDR
 }

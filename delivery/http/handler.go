@@ -17,19 +17,34 @@ type MetricsHandler struct {
 //MetricsHandler is the handler which will be used for handler metric request via http protocol
 func (m *MetricsHandler) MetricsHandler(w http.ResponseWriter, r *http.Request) {
 
-	result, err := m.CdrUsecase.CalculateDeliveryInterval()
+	w.Header().Set("Content-Type", "application/json")
+
+	metrics := make([]Metric, 0)
+	result, err := m.CdrUsecase.FindDeliveryMetric()
 
 	if err != nil {
 
+		w.Write(ErrorHandler(0, err.Error()))
+
+	} else {
+
+		for i := 0; len(result); i++ {
+
+			metric := Metric{
+				Interval:          int64(result[i].Interval),
+				AcceptedDateTime:  result[i].SubmmitedDateTime,
+				DeliveredDateTime: result[i].DateTime,
+				Provider:          "",
+				SmsAPIMessageID:   result[i].QueueMessageID,
+			}
+
+			metrics = append(metrics, metric)
+
+		}
+
+		w.Write(metrics)
+
 	}
-
-	json, err := json.Marshal(Metric{
-
-		Interval: int64(result),
-	})
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
 
 }
 
@@ -38,6 +53,7 @@ func (m *MetricsHandler) HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "<h1>Sms Monitoring Api</h1>")
+
 }
 
 //NewHTTPMetricHandler initiate metric http handler
@@ -49,5 +65,16 @@ func NewHTTPMetricHandler(r *mux.Router, u usecase.CDRUsecase) {
 
 	r.HandleFunc("/", handler.HomeHandler)
 	r.HandleFunc("/metrics", handler.MetricsHandler)
+
+}
+
+func ErrorHandler(errorCode int, errorMessage string) []byte {
+
+	res, _ := json.Marshal(ErrorResponse{
+		ErrorCode:    errorCode,
+		ErrorMessage: errorMessage,
+	})
+
+	return res
 
 }

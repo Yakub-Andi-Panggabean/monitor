@@ -1,6 +1,6 @@
 [logger]
-transactional = "d:\\var\\log\\monitoring.log" 
-error = "d:\\var\\log\\monitoring.err.log"
+transactional = "/home/yakub/log/monitoring.log"
+error = "/home/yakub/log/monitoring.err.log"
 maxSize = 100
 MaxAge = 7
 MaxBackups = 10
@@ -8,7 +8,27 @@ MaxBackups = 10
 [server]
 port = 8080
 
-[database.indosat]
-name = "CDR_ISAT"
-address = "10.32.6.71"
+[databases.tsel]
+name = "SMPP_TSELIM"
+address = "10.32.6.180"
 port = "3306"
+
+[databases.xl]
+name = "SMPP_XLIM"
+address = "10.32.6.180"
+port = "3306"
+
+[databases.fren]
+name = "SMPP_JAVA"
+address = "10.32.6.180"
+port = "3306"
+
+[databases.mysmsmasking]
+name = "CDR_MYSMSMASKING"
+address = "10.32.6.180"
+port = "3306"
+
+[databases.connection]
+maxConnectionLifeTime=1
+maxIdleConnection=2
+maxOpenConnection=5
