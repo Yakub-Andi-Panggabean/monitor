@@ -4,32 +4,28 @@ import (
 	"net/http"
 	"strconv"
 
-	delivery "firstwap.com/sms-monitoring-api/delivery/http"
-	"firstwap.com/sms-monitoring-api/repository"
-	"firstwap.com/sms-monitoring-api/util"
-	"github.com/gorilla/mux"
+	"firstwap.com/sms-monitoring-api/application/config"
+	monitorHttp "firstwap.com/sms-monitoring-api/application/http"
+	"firstwap.com/sms-monitoring-api/application/logger"
 
-	"firstwap.com/sms-monitoring-api/usecase"
+	"github.com/gorilla/mux"
 )
 
-var log = util.NewFirstLogger("main")
-var cdrRepository = repository.NewMySQLRepository()
+var log = logger.New("main")
 
 func main() {
 
-	serverPort := ":" + strconv.Itoa(int(util.GetConfig("server.port").(int64)))
+	serverPort := ":" + strconv.Itoa(int(config.Get("server.port").(int64)))
 
 	r := mux.NewRouter()
 
-	cdrUsecase := usecase.NewCDRUsecase(cdrRepository)
-
-	delivery.NewHTTPMetricHandler(r, cdrUsecase)
+	monitorHttp.New(r)
 
 	err := http.ListenAndServe(serverPort, r)
 
 	if err != nil {
 
-		log.Error(util.GetConfig("logger.error"))
+		log.Error(config.Get("logger.error"))
 
 	} else {
 
